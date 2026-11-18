@@ -30,6 +30,8 @@ pnpm test           # Vitest
 pnpm check          # lint + typecheck + test + Prettier: run before every PR
 pnpm build
 pnpm format         # fix formatting
-supabase start      # local Postgres/Auth/Storage (after T0.6)
-supabase db reset   # re-apply migrations + seed (after T0.6)
+pnpm db:start      # local Supabase: Postgres, Auth, Storage, Studio (needs Docker Desktop)
+pnpm db:reset      # re-apply migrations + seed
+pnpm db:test       # pgTAP database tests (RLS etc.)
+pnpm db:stop
 ```

@@ -23,3 +23,7 @@ Thumbs.db
 # editor
 .vscode/*
 !.vscode/extensions.json
+
+# Supabase CLI local state
+supabase/.branches/
+supabase/.temp/

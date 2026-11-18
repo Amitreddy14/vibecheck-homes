@@ -5,6 +5,15 @@
 
 ---
 
+## 2026-11-18 — T0.6 local Supabase
+
+- Supabase CLI 3.2 as a root dev dependency; `supabase/config.toml` (project id `vibecheck-homes`, auth site URL `http://localhost:3000`).
+- First migration `20261118183000_app_meta.sql`: shared `set_updated_at()` trigger helper + `app_meta` key/value table (settings every client can read; only the server writes). RLS on; default Supabase grants revoked and only `select` given back to `anon`/`authenticated`.
+- **Pattern for every future table:** RLS on, revoke default grants, grant only what's needed, explicit policies, pgTAP tests in `supabase/tests/database/` in the same PR.
+- pgTAP tests (8): structure, RLS on, "every public table has RLS" guard, key format check, anon can read, anon/authenticated can't write.
+- Verified in a container against Postgres 16 + pgTAP with stand-in Supabase roles: migration + seed apply, all 8 tests pass, and turning RLS off makes tests 2 and 3 fail. `supabase start` itself could not run there (image registries blocked), so the first full Supabase run is on Amit's laptop with Docker Desktop.
+- Root commands: `pnpm db:start`, `db:stop`, `db:reset`, `db:test`, `db:status`.
+
 ## 2026-11-18 — T0.5 lint and test tooling
 
 - ESLint (flat config) per package: `apps/web` uses Next.js's recommended set (React, hooks, accessibility basics, Core Web Vitals, TypeScript); `packages/shared` uses typescript-eslint recommended. Project rules on top: no `console`, no `any`, `===` only, no `dangerouslySetInnerHTML`. Lint runs with `--max-warnings=0`.
