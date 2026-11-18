@@ -50,23 +50,23 @@ Format: **decision → problem it solves → trade-off → simpler alternative.*
 
 ## 3. Tech stack
 
-| Layer            | Choice                                                                                 | Notes                                            |
-| ---------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| Language         | TypeScript (strict) for web/core; Python 3.12+ for AI service                          |                                                  |
-| Web              | Next.js App Router, React, Tailwind CSS, a motion library for swipe/micro-interactions | Exact versions pinned in the lockfile at Phase 0 |
-| UI kit           | Headless accessible primitives (shadcn/ui-style) themed to `design.md`                 |                                                  |
-| Data fetching    | TanStack Query on the client; server components where possible                         |                                                  |
-| Validation       | Zod schemas in `packages/shared`, used on client **and** server                        | Never trust the frontend                         |
-| Database         | Supabase Postgres + PostGIS (location) + pgvector (Phase 10 embeddings)                |                                                  |
-| Auth             | Supabase Auth: Google OAuth + email magic link (phone OTP later: SMS costs money)      |                                                  |
-| Realtime         | Supabase Realtime for chat                                                             |                                                  |
-| Storage          | Supabase Storage, **private** buckets, signed URLs                                     |                                                  |
-| AI service       | FastAPI, Pydantic, pytest; managed with `uv`                                           | Host chosen in Phase 5                           |
-| Tests            | Vitest (unit), pgTAP or SQL tests for RLS/functions, Playwright (E2E), pytest          |                                                  |
-| Lint/format      | ESLint + Prettier (TS), Ruff (Python)                                                  |                                                  |
-| Errors/analytics | Sentry (free tier), PostHog (free tier)                                                | Phase 6                                          |
-| Payments         | Razorpay                                                                               | Phase 8                                          |
-| CI/CD            | GitHub Actions                                                                         | §8                                               |
+| Layer            | Choice                                                                                                                                                                   | Notes                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| Language         | TypeScript (strict) for web/core; Python 3.12+ for AI service                                                                                                            |                                                  |
+| Web              | Next.js App Router, React, Tailwind CSS 4 (tokens in `apps/web/src/styles/globals.css`), fonts self-hosted via Fontsource, a motion library for swipe/micro-interactions | Exact versions pinned in the lockfile at Phase 0 |
+| UI kit           | Headless accessible primitives (shadcn/ui-style) themed to `design.md`                                                                                                   |                                                  |
+| Data fetching    | TanStack Query on the client; server components where possible                                                                                                           |                                                  |
+| Validation       | Zod schemas in `packages/shared`, used on client **and** server                                                                                                          | Never trust the frontend                         |
+| Database         | Supabase Postgres + PostGIS (location) + pgvector (Phase 10 embeddings)                                                                                                  |                                                  |
+| Auth             | Supabase Auth: Google OAuth + email magic link (phone OTP later: SMS costs money)                                                                                        |                                                  |
+| Realtime         | Supabase Realtime for chat                                                                                                                                               |                                                  |
+| Storage          | Supabase Storage, **private** buckets, signed URLs                                                                                                                       |                                                  |
+| AI service       | FastAPI, Pydantic, pytest; managed with `uv`                                                                                                                             | Host chosen in Phase 5                           |
+| Tests            | Vitest (unit), pgTAP or SQL tests for RLS/functions, Playwright (E2E), pytest                                                                                            |                                                  |
+| Lint/format      | ESLint + Prettier (TS), Ruff (Python)                                                                                                                                    |                                                  |
+| Errors/analytics | Sentry (free tier), PostHog (free tier)                                                                                                                                  | Phase 6                                          |
+| Payments         | Razorpay                                                                                                                                                                 | Phase 8                                          |
+| CI/CD            | GitHub Actions                                                                                                                                                           | §8                                               |
 
 ## 4. Repository structure _(planned)_
 

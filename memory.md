@@ -5,6 +5,22 @@
 
 ---
 
+## 2026-11-18 — T0.4 web app skeleton (+ T0.11 Tailwind theme)
+
+- Tailwind CSS 4 with the design tokens from `design.md` §3 in `apps/web/src/styles/globals.css` (`bg-bg`, `text-ink`, `bg-primary`, `bg-tag-*`, `font-display`, `rounded-card`, …). Dark theme draft follows the device setting.
+- **Decision:** Self-host fonts from npm (Fontsource) instead of `next/font/google`.
+  **Why:** Builds never depend on reaching Google Fonts (CI and offline builds stay reliable); no third-party font requests from users' browsers.
+  **Trade-off:** Font updates come through Dependabot instead of automatically.
+  **Alternative:** `next/font/google` (downloads at build time).
+- Environment variables are checked with Zod in `apps/web/src/lib/env.ts`, imported by `next.config.ts`, so a missing or bad value stops `pnpm build`/`pnpm dev` with a clear message. Only `NEXT_PUBLIC_APP_URL` for now; Supabase keys come in T0.6.
+- Security headers on every response (`apps/web/src/lib/security-headers.ts`): CSP, HSTS, nosniff, frame denial, referrer policy, permissions policy, COOP. `X-Powered-By` is off.
+- **Decision:** CSP keeps `'unsafe-inline'` for scripts for now.
+  **Why:** Next.js boots with inline scripts; a nonce-based CSP makes every page dynamic.
+  **Trade-off:** Weaker XSS protection until Phase 6.
+  **Alternative:** Nonce CSP via middleware now. Scheduled for Phase 6 hardening.
+- Turbo build now tracks `.env*` files and `NEXT_PUBLIC_APP_URL`, so changing them busts the build cache.
+- Verified here: build fails without env and passes with it; typecheck passes; headers checked with `curl` against `next start`; tokens and fonts present in the built CSS.
+
 ## 2026-11-18 — T0.3 monorepo setup
 
 - pnpm workspace + Turborepo: `apps/web` (Next.js 16, React 19), `packages/shared` (`@vch/shared`), `packages/config` (`@vch/config`, shared tsconfigs).
