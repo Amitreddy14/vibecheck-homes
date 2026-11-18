@@ -11,6 +11,7 @@ In Indian cities, people pick a flatmate after one WhatsApp call and then sign a
 Mismatched sleep schedules, cleanliness, guests, smoking, food habits and money issues show up only after moving in, when leaving is expensive.
 
 Existing options:
+
 - **Facebook / WhatsApp groups and brokers:** no verification, lots of fake listings and deposit scams, no compatibility signal.
 - **Listing platforms (FlatMate.in, FlatX, NoBroker-style):** good at flats; some already offer match scores, hidden-number chat and identity checks. Matching alone is no longer a differentiator.
 - **Nothing helps after the match:** splitting bills, chores, reminders and house rules happen in messy group chats.
@@ -24,12 +25,12 @@ deep compatibility matching → safe chat → verified meetups → a shared hous
 
 ## 3. Target users (launch: Chennai)
 
-| Persona | Who | Main pain | What they need from us |
-|---|---|---|---|
-| **Campus seeker** | College student (e.g. SRM, near OMR) moving off-campus | Doesn't know anyone; scared of scams | Campus-verified matches, safe chat, budget fit |
-| **Fresher / young professional** | 21–28, new job in Chennai | New city, short notice, no network | Fast compatible matches near the office, verified people |
-| **Room holder** | Has a flat, needs to fill a room | Strangers, no-shows, flaky people | Serious, verified applicants who fit the house |
-| **Women seekers** (cross-cutting) | Any of the above | Safety | Women-only mode, verified-only chat, meetup check-ins |
+| Persona                           | Who                                                    | Main pain                            | What they need from us                                   |
+| --------------------------------- | ------------------------------------------------------ | ------------------------------------ | -------------------------------------------------------- |
+| **Campus seeker**                 | College student (e.g. SRM, near OMR) moving off-campus | Doesn't know anyone; scared of scams | Campus-verified matches, safe chat, budget fit           |
+| **Fresher / young professional**  | 21–28, new job in Chennai                              | New city, short notice, no network   | Fast compatible matches near the office, verified people |
+| **Room holder**                   | Has a flat, needs to fill a room                       | Strangers, no-shows, flaky people    | Serious, verified applicants who fit the house           |
+| **Women seekers** (cross-cutting) | Any of the above                                       | Safety                               | Women-only mode, verified-only chat, meetup check-ins    |
 
 **Out of scope for launch:** landlords and brokers listing whole flats, families, and anyone under 18.
 
@@ -43,6 +44,7 @@ deep compatibility matching → safe chat → verified meetups → a shared hous
 ## 5. Goals and non-goals
 
 **Goals (beta)**
+
 - G1: A new user finishes onboarding (profile + vibe quiz) in **≤ 5 minutes**.
 - G2: Every match shows a score breakdown the user can understand.
 - G3: No phone number, exact address or ID document is ever shown to another user without consent.
@@ -50,6 +52,7 @@ deep compatibility matching → safe chat → verified meetups → a shared hous
 - G5: Meets DPDP Act duties in the product: notice, consent, access, correction, erasure, breach handling.
 
 **Non-goals (for now)**
+
 - Holding or moving money (no wallet or escrow: avoids payment-regulation territory).
 - Rent agreements, e-stamping, broker features.
 - Multi-city launch, native iOS before Phase 9, a learned ML ranker before there's enough interaction data.
@@ -58,19 +61,19 @@ deep compatibility matching → safe chat → verified meetups → a shared hous
 
 Acceptance criteria are the minimum for a phase to count as done. Full task breakdown: `task.md`.
 
-| Phase | Feature | Acceptance criteria (summary) |
-|---|---|---|
-| 0 | Foundation | Monorepo builds; CI green on PR; staging deploy on merge; nightly DB backup job; docs in place |
-| 1 | Sign-up and profile | Google + email-link sign-in; 18+ gate; consent notice stored; profile with photos (type/size checked, private bucket); vibe quiz saved; college-email verification sets badge |
-| 2 | Matching | Hard filters + weighted score in Postgres; swipe deck; mutual like → match; "why you match" (top 3 reasons + 1 conflict); no profile shown that fails a hard filter |
-| 3 | Chat + safety | Realtime 1:1 chat only after a match; phone/links masked until both opt in; report and block (blocked user disappears both ways); women-only mode; verified-only chat setting; meetup check-in reminder |
-| 4 | Listings | "Have a room" / "Need a room" posts; map shows a rough area only (never the exact address); duplicate-photo detection |
-| 5 | AI v1 | Chat-style onboarding agent fills the quiz; LLM match explainer; scam/abuse classifier on listings and messages; every AI feature has an eval set and a fallback |
-| 6 | Hardening + Chennai beta | Security review against rules.md checklist; DPDP review; load test; Sentry + analytics live; beta invite flow |
-| 7 | House hub | Household with members; expense log + "who owes whom" + UPI deep link; chore rotation; reminders; house-rules agreement (AI-drafted, members accept) |
-| 8 | Money | Razorpay: boosted listings, premium matching; paid hosting tiers; paid ID verification on |
-| 9 | Mobile | Expo app reusing shared packages; Play Store then App Store |
-| 10 | ML v2 | Learning-to-rank from swipes, chats and meetups; A/B tested against rule-based scoring |
+| Phase | Feature                  | Acceptance criteria (summary)                                                                                                                                                                           |
+| ----- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0     | Foundation               | Monorepo builds; CI green on PR; staging deploy on merge; nightly DB backup job; docs in place                                                                                                          |
+| 1     | Sign-up and profile      | Google + email-link sign-in; 18+ gate; consent notice stored; profile with photos (type/size checked, private bucket); vibe quiz saved; college-email verification sets badge                           |
+| 2     | Matching                 | Hard filters + weighted score in Postgres; swipe deck; mutual like → match; "why you match" (top 3 reasons + 1 conflict); no profile shown that fails a hard filter                                     |
+| 3     | Chat + safety            | Realtime 1:1 chat only after a match; phone/links masked until both opt in; report and block (blocked user disappears both ways); women-only mode; verified-only chat setting; meetup check-in reminder |
+| 4     | Listings                 | "Have a room" / "Need a room" posts; map shows a rough area only (never the exact address); duplicate-photo detection                                                                                   |
+| 5     | AI v1                    | Chat-style onboarding agent fills the quiz; LLM match explainer; scam/abuse classifier on listings and messages; every AI feature has an eval set and a fallback                                        |
+| 6     | Hardening + Chennai beta | Security review against rules.md checklist; DPDP review; load test; Sentry + analytics live; beta invite flow                                                                                           |
+| 7     | House hub                | Household with members; expense log + "who owes whom" + UPI deep link; chore rotation; reminders; house-rules agreement (AI-drafted, members accept)                                                    |
+| 8     | Money                    | Razorpay: boosted listings, premium matching; paid hosting tiers; paid ID verification on                                                                                                               |
+| 9     | Mobile                   | Expo app reusing shared packages; Play Store then App Store                                                                                                                                             |
+| 10    | ML v2                    | Learning-to-rank from swipes, chats and meetups; A/B tested against rule-based scoring                                                                                                                  |
 
 ## 7. Business model
 
@@ -80,14 +83,14 @@ Acceptance criteria are the minimum for a phase to count as done. Full task brea
 
 ## 8. Success metrics
 
-| Metric | Why | Beta target (to validate) |
-|---|---|---|
-| Onboarding completion rate | Funnel health | ≥ 60% |
-| Match rate (mutual likes / likes) | Matching quality | Track baseline |
-| Chat → meetup rate | Real intent | Track baseline |
-| Reports per 1,000 users | Safety | Falling over time |
-| Households created | House-hub adoption | Track after Phase 7 |
-| D30 retention | Product–market fit | Track baseline |
+| Metric                            | Why                | Beta target (to validate) |
+| --------------------------------- | ------------------ | ------------------------- |
+| Onboarding completion rate        | Funnel health      | ≥ 60%                     |
+| Match rate (mutual likes / likes) | Matching quality   | Track baseline            |
+| Chat → meetup rate                | Real intent        | Track baseline            |
+| Reports per 1,000 users           | Safety             | Falling over time         |
+| Households created                | House-hub adoption | Track after Phase 7       |
+| D30 retention                     | Product–market fit | Track baseline            |
 
 ## 9. Constraints
 
