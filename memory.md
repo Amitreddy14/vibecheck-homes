@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-11-18 — T0.5 lint and test tooling
+
+- ESLint (flat config) per package: `apps/web` uses Next.js's recommended set (React, hooks, accessibility basics, Core Web Vitals, TypeScript); `packages/shared` uses typescript-eslint recommended. Project rules on top: no `console`, no `any`, `===` only, no `dangerouslySetInnerHTML`. Lint runs with `--max-warnings=0`.
+- **Decision:** ESLint 9.39, not 10.
+  **Why:** eslint-plugin-react and eslint-plugin-import (pulled in by Next's config) only support ESLint ≤ 9.
+  **Trade-off:** Miss ESLint 10 improvements for now.
+  **Alternative:** Upgrade once those plugins support 10 (Dependabot will flag it).
+- Vitest 5.1 in node mode for unit tests. React component tests (jsdom + Testing Library) get added with the first real components in Phase 1.
+- First tests: env validation (4), security headers (3), shared constants (1). All pass.
+- `env.ts` split into `env-schema.ts` (pure, testable `parseEnv`) and `env.ts` (reads `process.env` once).
+- New root commands: `pnpm lint`, `pnpm test`, `pnpm check` (lint + typecheck + tests + Prettier: run before every PR).
+
 ## 2026-11-18 — T0.4 web app skeleton (+ T0.11 Tailwind theme)
 
 - Tailwind CSS 4 with the design tokens from `design.md` §3 in `apps/web/src/styles/globals.css` (`bg-bg`, `text-ink`, `bg-primary`, `bg-tag-*`, `font-display`, `rounded-card`, …). Dark theme draft follows the device setting.

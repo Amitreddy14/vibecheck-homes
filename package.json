@@ -10,7 +10,10 @@
     "build": "turbo run build",
     "typecheck": "turbo run typecheck",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "check": "turbo run lint typecheck test && prettier --check ."
   },
   "devDependencies": {
     "prettier": "3.10.1",

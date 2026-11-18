@@ -19,14 +19,17 @@ Read these before any work, in this order:
 - Git: Amit runs git himself. Prepare changes and give the commands. **Never add AI attribution** (no Co-Authored-By, no "Generated with") to commits, PRs or code.
 - Update `task.md` status and add a `memory.md` entry at the end of each task.
 
-## Commands _(available after T0.3–T0.6)_
+## Commands
 
 ```
 pnpm install
-pnpm dev            # web app
-pnpm lint
+pnpm dev            # web app on http://localhost:3000 (needs apps/web/.env.local)
+pnpm lint           # ESLint, zero warnings allowed
 pnpm typecheck
-pnpm test
-supabase start      # local Postgres/Auth/Storage
-supabase db reset   # re-apply migrations + seed
+pnpm test           # Vitest
+pnpm check          # lint + typecheck + test + Prettier: run before every PR
+pnpm build
+pnpm format         # fix formatting
+supabase start      # local Postgres/Auth/Storage (after T0.6)
+supabase db reset   # re-apply migrations + seed (after T0.6)
 ```
