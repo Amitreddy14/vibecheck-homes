@@ -1,6 +1,7 @@
 # design.md — Visual identity
 
-> Status: **Direction not chosen yet.** Three mockups (bold and playful, soft and cosy, dark and premium) are being made; tokens below get filled in once one is picked.
+> Status: **Direction chosen (2026-11-18): B's layout (soft and cosy) with A's colours (bold and playful).** Font pairing still to confirm.
+> Mockups: https://claude.ai/artifact/DEc9u6G4gwVsUBv3uHCnnY (artboard "Chosen").
 > Audience: Gen Z and young professionals in India, mostly on phones.
 
 ---
@@ -22,26 +23,57 @@
 | **B. Soft and cosy** | Home, calm, safe | Warm pastels, cream background | Friendly rounded sans, hand-drawn accents | Gentle fades and eases |
 | **C. Dark and premium** | Fintech / music-app polish | Near-black base, one neon accent | Tight geometric sans | Smooth, subtle micro-interactions |
 
-**Decision:** _pending_. Record the choice and reasons in `memory.md`.
+**Decision:** B's layout + A's colours.
+- **From B (layout):** big rounded cards (32 px), soft pill buttons with words ("Not for me" / "Say hi"), a calm one-card deck, a ring for the match score, the "why you match" callout.
+- **From A (colour):** cream ground, black ink outlines (2 px), hot-pink accent, sunny yellow highlight, pastel tag pills.
+- **Dropped from A:** hard offset shadows and the tilted card (too loud next to soft shapes).
+- **Font pairing (to confirm):** default Bricolage Grotesque + DM Sans; alternative Fraunces + Nunito (switchable in the mockup's Tweaks).
 
-## 3. Design tokens *(fill in after the choice)*
+## 3. Design tokens
+
+**Light theme (default)**
+
+| Token | Value | Use |
+|---|---|---|
+| `color.bg` | `#FFF7E8` | App background (cream) |
+| `color.surface` | `#FFFFFF` | Cards, sheets, nav |
+| `color.ink` | `#1A1A1A` | Text, outlines, icons |
+| `color.text-muted` | `#4A4A4A` | Secondary text (passes AA on cream and white) |
+| `color.border` | `#1A1A1A`, 2 px | Card, button and chip outlines |
+| `color.primary` | `#FF5C93` | Main action ("Say hi"), match ring. **Text on it is ink, never white** (white fails contrast) |
+| `color.highlight` | `#FFE45C` | Active nav pill, filter button, small highlights |
+| `color.callout` | `#FFF1B8` | "Why you match" box |
+| `color.tag.pink / butter / sky / mint` | `#FFD1E0` / `#FFE9B8` / `#DCE6FF` / `#C9F2D9` | Lifestyle tag pills (ink text) |
+| `color.verified` | `#C9F2D9` + ink outline + shield icon | Verified badge (same in every theme) |
+| `color.photo-placeholder` | `#8FB3FF` | Empty photo slots |
+| `color.success / warning / danger` | `#22C27A` / `#FFB020` / `#C8323C` | Status; danger text on white uses `#C8323C` |
+
+**Dark theme (draft: to test on real screens)**
+
+| Token | Value |
+|---|---|
+| `color.bg` | `#15130F` |
+| `color.surface` | `#211E19` |
+| `color.ink` (text) | `#FFF7E8` |
+| `color.text-muted` | `#C9C1B3` |
+| `color.border` | `#FFF7E8` at 2 px |
+| Accent, highlight, tag colours | Same as light; text on them stays `#1A1A1A` |
+
+**Shape, space, type, motion**
 
 ```
-color.bg / color.surface / color.surface-raised
-color.text / color.text-muted
-color.primary / color.primary-contrast
-color.accent
-color.success / color.warning / color.danger
-color.verified          # the badge colour: same in every theme
-radius.sm / md / lg / pill
-space: 4 · 8 · 12 · 16 · 24 · 32 · 48
-font.display / font.body / font.mono
-text: 12 · 14 · 16 · 20 · 24 · 32 · 40
-shadow / border: per direction
-motion.fast 120ms · motion.base 200ms · motion.slow 320ms; spring presets
+radius.sm 12 · radius.md 20 · radius.lg 32 (cards) · radius.pill 999
+border.width 2
+shadow: none (flat; outlines carry the structure)
+space: 4 · 8 · 12 · 16 · 20 · 24 · 32 · 48
+font.display: Bricolage Grotesque 700/800 (alt: Fraunces 600)
+font.body: DM Sans 400/500/700 (alt: Nunito 400/600/700)
+text: 12 · 13 · 14 · 15 · 16 · 20 · 24 · 26 · 32 · 40
+touch target: 44 px minimum; primary buttons 56 px tall
+motion.fast 120ms · motion.base 200ms · motion.slow 320ms
+motion.swipe: spring (gentle, little overshoot); match moment: one celebratory burst
+all motion off under prefers-reduced-motion
 ```
-
-Light and dark themes are both required.
 
 ## 4. Core components (to design)
 

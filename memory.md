@@ -5,6 +5,16 @@
 
 ---
 
+## 2026-11-18 — UI direction chosen
+
+- **Decision:** B's layout (soft and cosy) with A's colours (bold and playful).
+  **Why:** Soft, roomy layout reads as safe and homely; loud colours keep the Gen Z energy.
+  **Trade-off:** Two styles mixed: must keep outlines and colours disciplined so it doesn't look busy.
+  **Alternative:** Pure A (louder, less "safe") or pure B (calmer, less distinctive).
+- Hard shadows and the tilted card from A were dropped.
+- Tokens written in `design.md` §3. Font pairing to confirm (default Bricolage Grotesque + DM Sans).
+- Mockups: https://claude.ai/artifact/DEc9u6G4gwVsUBv3uHCnnY
+
 ## 2026-11-18 — Project kickoff and Phase 0 planning
 
 **Context**
