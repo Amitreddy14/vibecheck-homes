@@ -11,7 +11,7 @@
 2. **One task at a time** from `task.md`. Small PRs (aim for under ~400 changed lines).
 3. **Right-sized engineering.** Don't add infrastructure (Kubernetes, Kafka, microservices, Redis, queues) unless a task needs it and `memory.md` records why.
 4. **Explain significant decisions:** the problem, the trade-off and the simpler alternative. Log them in `memory.md`.
-5. **Honest reporting.** Say "tested" only if tests were run and passed. Keep *built* separate from *planned*. Never claim a check ran when it didn't.
+5. **Honest reporting.** Say "tested" only if tests were run and passed. Keep _built_ separate from _planned_. Never claim a check ran when it didn't.
 6. **Update docs in the same PR** when behaviour, schema or architecture changes: `Architecture.md`, `task.md` status and a `memory.md` entry.
 
 ## 2. Git
@@ -25,6 +25,7 @@
 ## 3. Code
 
 **TypeScript**
+
 - `strict: true`; no `any` (use `unknown` + narrowing); no `@ts-ignore` without a linked issue.
 - Validate every external input (forms, route params, webhooks, AI output) with Zod schemas from `packages/shared`.
 - Server-only code lives in `server/` folders and imports `server-only`. Never import secrets or the service-role client into client components.
@@ -33,6 +34,7 @@
 - No `console.log` in committed code; use the logger.
 
 **Database**
+
 - Schema changes **only** through migrations in `supabase/migrations/`. Never edit the database by hand in staging or production.
 - **Every new table: RLS on + policies + tests in the same migration PR.**
 - Parameterized queries only; no string-built SQL.
@@ -40,6 +42,7 @@
 - No hard deletes of user content without a reason; erasure requests follow the DPDP flow (§6).
 
 **Python (AI service)**
+
 - Typed (Pydantic models for every request/response), Ruff clean, pytest for every endpoint.
 - The service checks a signed token from the core app on every call; it is never public without auth.
 

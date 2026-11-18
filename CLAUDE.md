@@ -1,6 +1,7 @@
 # CLAUDE.md — Vibecheck Homes
 
 Read these before any work, in this order:
+
 1. `rules.md`: how to work (process, git, code, security checklist, AI, privacy, testing). **These rules are binding.**
 2. `task.md`: pick the current `in-progress` or next `todo` task. Work on one task only.
 3. `Architecture.md`: structure, stack, data model, decisions (ADRs).
@@ -18,7 +19,7 @@ Read these before any work, in this order:
 - Git: Amit runs git himself. Prepare changes and give the commands. **Never add AI attribution** (no Co-Authored-By, no "Generated with") to commits, PRs or code.
 - Update `task.md` status and add a `memory.md` entry at the end of each task.
 
-## Commands *(available after T0.3–T0.6)*
+## Commands _(available after T0.3–T0.6)_
 
 ```
 pnpm install
