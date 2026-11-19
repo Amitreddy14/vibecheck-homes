@@ -9,15 +9,16 @@
 
 - T0.6 confirmed on Amit's laptop: `pnpm db:reset` applied the migration and seed; `pnpm db:test` passed 8/8.
 - `.github/workflows/ci.yml` runs on every PR and every push to `main`, in two jobs:
-  - **Lint, typecheck, test, build**: frozen-lockfile install, Prettier check, ESLint, typecheck, Vitest, `next build`.
-  - **Database migrations and RLS tests**: starts only Postgres via the pinned Supabase CLI (migrations + seed), then `pnpm db:test`.
+  - **Code checks**: frozen-lockfile install, Prettier check, ESLint, typecheck, Vitest, `next build`.
+  - **Database tests**: starts only Postgres via the pinned Supabase CLI (migrations + seed), then `pnpm db:test`.
 - **Decision:** Pin every GitHub Action to a full commit SHA (tag in a comment).
   **Why:** A moved or hijacked tag can't change what runs in CI.
   **Trade-off:** Updates need a PR, which Dependabot opens.
   **Alternative:** Pin to major tags (`@v7`), simpler but weaker.
 - `permissions: contents: read` (least privilege); old runs on the same branch are cancelled when a new commit arrives.
 - `.github/dependabot.yml`: weekly grouped PRs for npm and GitHub Actions, with a 3-day cooldown after each release.
-- After the first run, both job names are made **required status checks** on `main` (finishes T0.2).
+- Ruleset `protect-main` on `main` requires the checks **Code checks** and **Database tests** (the CI job names), a PR (0 approvals: solo), no force pushes, no deletion. Job names have no commas: GitHub's check picker split the first name at its commas. Renaming a CI job means updating the ruleset too.
+- Private-repo rulesets are only enforced on GitHub Pro or higher; Amit is applying for Pro through the GitHub Student Developer Pack. T0.2 stays in progress until enforcement is on.
 
 ## 2026-11-18 — T0.6 local Supabase
 
