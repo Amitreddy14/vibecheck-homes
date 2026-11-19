@@ -43,6 +43,28 @@ jobs:
       name: ${{ inputs.environment }}
       url: ${{ inputs.app-url }}
     steps:
+      # Fail fast with a clear message if a secret is missing or malformed.
+      # Values are never printed: GitHub masks secrets, and this step only checks them.
+      - name: Check deploy secrets
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          fail=0
+          for name in SUPABASE_ACCESS_TOKEN SUPABASE_PROJECT_REF SUPABASE_DB_PASSWORD VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Secret $name is missing or empty (environment: ${{ inputs.environment }})."
+              fail=1
+            fi
+          done
+          if [ -n "$SUPABASE_PROJECT_REF" ] && ! [[ "$SUPABASE_PROJECT_REF" =~ ^[a-z]{20}$ ]]; then
+            echo "::error::SUPABASE_PROJECT_REF must be exactly the 20-letter project ref (e.g. the part before .supabase.co), with no https://, domain or spaces."
+            fail=1
+          fi
+          exit "$fail"
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
