@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-11-19 — T0.8 environments + T0.9 deploy workflows
+
+- **T0.8 done:** Supabase `vibecheck-staging` (ref `bozwowmkhhwzhystumic`) and `vibecheck-prod` (ref `wkfhwuozmhjfytugfula`), both in Mumbai, Free plan. Vercel project `vibecheck-homes` (Hobby, root `apps/web`) at https://vibecheck-homes.vercel.app. GitHub environments `staging` and `production` (production needs Amit's approval), each with `SUPABASE_PROJECT_REF` and `SUPABASE_DB_PASSWORD`; repo secrets `SUPABASE_ACCESS_TOKEN`, `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`.
+- **T0.9:** `_deploy.yml` (shared recipe), `deploy-staging.yml` (every push to `main`), `release.yml` (tags `vX.Y.Z`).
+- **Decision:** Deploy through GitHub Actions + Vercel CLI; Vercel's Git auto-deploys turned off.
+  **Why:** One controlled path: migrations run before the app deploys, production needs approval, and every deploy is in the Actions log.
+  **Trade-off:** No automatic Vercel preview per PR (CI already builds every PR).
+  **Alternative:** Vercel's Git integration (simpler, but no migration step and no approval gate).
+- **Decision:** Staging = a Vercel preview deployment aliased to https://vibecheck-homes-staging.vercel.app.
+  **Why:** Hobby gives one production target; the alias gives staging a stable URL.
+  **Trade-off:** Staging shares Vercel's "Preview" environment variables.
+- Migrations: dry run first (shows what will change in the log), then `supabase db push`. Seed data never goes to hosted databases.
+- Rule: migrations must stay backward compatible with the code already live (add columns/tables first, remove in a later release), because the database updates a minute before the new app.
+- Smoke test after each deploy: `vercel curl` requests the new deployment and fails on any 4xx/5xx. It gets past Vercel's login wall, which protects preview (staging) deployments by default; on its first run it created a "Protection Bypass for Automation" secret on the Vercel project (revocable under Deployment Protection). Keeping staging behind that login is intentional: only the team can open it.
+- First-run fixes (2026-11-19):
+  - `SUPABASE_PROJECT_REF` held a URL instead of the 20-letter ref → the deploy now starts with "Check deploy secrets", which names any missing or malformed secret without printing values.
+  - `vercel alias` failed with "User not found" → every Vercel CLI call passes `--scope="$VERCEL_ORG_ID"`, and `VERCEL_TOKEN` must be a **full-account** token (a team-only token can't look up its user, which `--scope` needs).
+  - `vercel curl` forwards unknown flags to curl, which rejected `--token` → the smoke test gets the token from the `VERCEL_TOKEN` environment variable.
+- Vercel CLI pinned to 65.16.0 (66.x released the same day this was written; supply-chain cooldown).
+- Checked with actionlint: no problems. First real run happens on GitHub.
+
 ## 2026-11-19 — T0.7 CI workflow
 
 - T0.6 confirmed on Amit's laptop: `pnpm db:reset` applied the migration and seed; `pnpm db:test` passed 8/8.
