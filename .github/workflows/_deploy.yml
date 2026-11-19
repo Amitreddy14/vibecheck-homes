@@ -1,0 +1,109 @@
+# Shared deploy recipe used by deploy-staging.yml and release.yml.
+# Order matters: database migrations first, then the web app, so new code
+# never runs against an old schema. (Migrations must stay backward compatible
+# with the code already live: add first, remove later.)
+name: Deploy (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: GitHub environment holding the Supabase secrets (staging | production)
+        required: true
+        type: string
+      vercel-environment:
+        description: Vercel target (preview | production)
+        required: true
+        type: string
+      app-url:
+        description: Public URL of this deployment (NEXT_PUBLIC_APP_URL)
+        required: true
+        type: string
+      alias:
+        description: Optional stable *.vercel.app name to point at this deployment
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+env:
+  VERCEL_CLI: vercel@65.16.0
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: ${{ inputs.environment }}
+      url: ${{ inputs.app-url }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Show pending database migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: >
+          pnpm exec supabase db push --dry-run
+          --remote="$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Apply database migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        # No seed data in hosted databases: seed.sql is local-only.
+        run: >
+          pnpm exec supabase db push --yes
+          --remote="$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Pull Vercel project settings
+        run: >
+          npx --yes ${{ env.VERCEL_CLI }} pull --yes
+          --environment=${{ inputs.vercel-environment }} --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_APP_URL: ${{ inputs.app-url }}
+        run: >
+          npx --yes ${{ env.VERCEL_CLI }} build
+          ${{ inputs.vercel-environment == 'production' && '--prod' || '' }}
+          --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy
+        id: deploy
+        run: |
+          url=$(npx --yes ${{ env.VERCEL_CLI }} deploy --prebuilt \
+            ${{ inputs.vercel-environment == 'production' && '--prod' || '' }} \
+            --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed: $url"
+
+      - name: Point stable URL at this deployment
+        if: inputs.alias != ''
+        run: >
+          npx --yes ${{ env.VERCEL_CLI }} alias set "${{ steps.deploy.outputs.url }}" "${{ inputs.alias }}"
+          --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Smoke test
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" --retry 5 --retry-delay 5 --retry-all-errors "${{ inputs.app-url }}")
+          echo "GET ${{ inputs.app-url }} -> $code"
+          test "$code" = "200"
