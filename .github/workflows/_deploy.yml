@@ -99,7 +99,7 @@ jobs:
       - name: Pull Vercel project settings
         run: >
           npx --yes ${{ env.VERCEL_CLI }} pull --yes
-          --environment=${{ inputs.vercel-environment }} --token=${{ secrets.VERCEL_TOKEN }}
+          --environment=${{ inputs.vercel-environment }} --scope="$VERCEL_ORG_ID" --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build
         env:
@@ -107,14 +107,14 @@ jobs:
         run: >
           npx --yes ${{ env.VERCEL_CLI }} build
           ${{ inputs.vercel-environment == 'production' && '--prod' || '' }}
-          --token=${{ secrets.VERCEL_TOKEN }}
+          --scope="$VERCEL_ORG_ID" --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy
         id: deploy
         run: |
           url=$(npx --yes ${{ env.VERCEL_CLI }} deploy --prebuilt \
             ${{ inputs.vercel-environment == 'production' && '--prod' || '' }} \
-            --token=${{ secrets.VERCEL_TOKEN }})
+            --scope="$VERCEL_ORG_ID" --token=${{ secrets.VERCEL_TOKEN }})
           echo "url=$url" >> "$GITHUB_OUTPUT"
           echo "Deployed: $url"
 
@@ -122,10 +122,14 @@ jobs:
         if: inputs.alias != ''
         run: >
           npx --yes ${{ env.VERCEL_CLI }} alias set "${{ steps.deploy.outputs.url }}" "${{ inputs.alias }}"
-          --token=${{ secrets.VERCEL_TOKEN }}
+          --scope="$VERCEL_ORG_ID" --token=${{ secrets.VERCEL_TOKEN }}
 
+      # Request the new deployment itself. `vercel curl` gets past Vercel's login wall on
+      # preview (staging) deployments; --fail makes any 4xx/5xx answer fail the step.
       - name: Smoke test
-        run: |
-          code=$(curl -s -o /dev/null -w "%{http_code}" --retry 5 --retry-delay 5 --retry-all-errors "${{ inputs.app-url }}")
-          echo "GET ${{ inputs.app-url }} -> $code"
-          test "$code" = "200"
+        run: >
+          npx --yes ${{ env.VERCEL_CLI }} curl / --yes
+          --deployment "${{ steps.deploy.outputs.url }}"
+          --scope="$VERCEL_ORG_ID" --token=${{ secrets.VERCEL_TOKEN }}
+          -- --fail --silent --show-error --output /dev/null
+          --retry 5 --retry-delay 5 --retry-all-errors
