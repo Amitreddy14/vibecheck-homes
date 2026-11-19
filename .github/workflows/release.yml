@@ -1,0 +1,24 @@
+# Production deploys happen only from a version tag, after manual approval:
+#   git tag v0.1.0 && git push origin v0.1.0
+# The "production" environment requires Amit's approval before this job starts.
+name: Release to production
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  production:
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      environment: production
+      vercel-environment: production
+      app-url: https://vibecheck-homes.vercel.app
+    secrets: inherit

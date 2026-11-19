@@ -1,0 +1,25 @@
+# Every merge to main goes to staging automatically.
+name: Deploy staging
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Never cancel a deploy halfway (a migration may be running); queue instead.
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  staging:
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      environment: staging
+      vercel-environment: preview
+      app-url: https://vibecheck-homes-staging.vercel.app
+      alias: vibecheck-homes-staging.vercel.app
+    secrets: inherit

@@ -141,17 +141,19 @@ All tables: `id uuid pk`, `created_at`, `updated_at`; RLS **on**.
 
 ## 8. Environments and CI/CD
 
-| Env        | Where                                        | Deploys when                   |
-| ---------- | -------------------------------------------- | ------------------------------ |
-| Local      | Supabase CLI (Docker) + `pnpm dev`           | —                              |
-| Staging    | Supabase project #1 + Vercel preview/staging | merge to `main`                |
-| Production | Supabase project #2 + Vercel production      | git tag `v*` (manual approval) |
+| Env        | Where                                                                                                        | Deploys when                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| Local      | Supabase CLI (Docker) + `pnpm dev`                                                                           | —                                  |
+| Staging    | Supabase `vibecheck-staging` (Mumbai) + Vercel preview aliased to https://vibecheck-homes-staging.vercel.app | merge to `main`                    |
+| Production | Supabase `vibecheck-prod` (Mumbai) + Vercel production at https://vibecheck-homes.vercel.app                 | git tag `vX.Y.Z` (manual approval) |
 
 **GitHub Actions workflows** _(planned, Phase 0)_:
 
 - `ci.yml` (every PR): install → lint → typecheck → unit tests → start local Supabase → apply migrations → RLS/SQL tests → build → Playwright smoke (once flows exist) → Python lint/tests (when `services/ai` exists).
-- `deploy-staging.yml` (push to `main`): run migrations on staging → deploy web.
-- `release.yml` (tag `v*`): requires the `production` environment approval → migrations on prod → deploy.
+- `_deploy.yml` (shared recipe): dry-run then apply migrations (`supabase db push`) → `vercel pull/build/deploy --prebuilt` → optional alias → smoke test (HTTP 200).
+- `deploy-staging.yml` (push to `main`, or run by hand): `_deploy.yml` with the `staging` environment.
+- Vercel's own Git auto-deploys are off (`apps/web/vercel.json`), so GitHub Actions is the only way code reaches staging or production.
+- `release.yml` (tag `vX.Y.Z`): `_deploy.yml` with the `production` environment, which waits for Amit's approval.
 - `backup.yml` (nightly): `pg_dump` production → encrypted artifact (free tier has no backups).
 - Dependabot for npm, pip and GitHub Actions.
 
