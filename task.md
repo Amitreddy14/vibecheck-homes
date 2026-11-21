@@ -19,7 +19,7 @@
 | T0.7  | CI workflow                   | `ci.yml` runs lint, typecheck, tests, migrations + SQL tests on local Supabase, build; required on PRs                                           | done   |
 | T0.8  | Staging + production projects | Two Supabase projects; Vercel project linked; GitHub environments `staging` and `production` (prod needs approval); secrets stored               | done   |
 | T0.9  | Deploy workflows              | `deploy-staging.yml` on push to `main`; `release.yml` on tag `v*`; first staging deploy live                                                     | review |
-| T0.10 | Backup workflow               | Nightly `pg_dump` of production to an encrypted artifact; restore tested once locally                                                            | todo   |
+| T0.10 | Backup workflow               | Nightly `pg_dump` of production to an encrypted artifact; restore tested once locally                                                            | review |
 | T0.11 | Design direction              | Pick one of three mockups; fill tokens in `design.md`; Tailwind theme from tokens                                                                | done   |
 | T0.12 | Phase 0 review                | Checklist in rules.md §4 for what exists; `memory.md` updated; tag `v0.0.1`                                                                      | todo   |
 
