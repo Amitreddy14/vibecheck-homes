@@ -68,7 +68,11 @@ jobs:
           remote=(--remote="$SUPABASE_PROJECT_REF" --password "$SUPABASE_DB_PASSWORD")
           pnpm exec supabase db dump "${remote[@]}" --role-only -f backup/roles.sql
           pnpm exec supabase db dump "${remote[@]}" -f backup/schema.sql
-          pnpm exec supabase db dump "${remote[@]}" --data-only --use-copy -f backup/data.sql
+          # Supabase-internal vector tables can't be restored (permission denied) and
+          # Supabase's own backup guide leaves them out.
+          pnpm exec supabase db dump "${remote[@]}" --data-only --use-copy \
+            -x storage.buckets_vectors -x storage.vector_indexes \
+            -f backup/data.sql
           ls -l backup
 
       - name: Encrypt
