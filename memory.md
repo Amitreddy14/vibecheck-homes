@@ -5,6 +5,21 @@
 
 ---
 
+## 2026-11-20 — T0.10 nightly production backups
+
+- Staging deploy pipeline fully green (2026-11-19, after the first-run fixes below).
+- `.github/workflows/backup.yml`: every night at 01:47 IST (or by hand) dumps production with the pinned Supabase CLI as `roles.sql`, `schema.sql`, `data.sql`; tars them; encrypts with GPG AES-256 using `BACKUP_PASSPHRASE`; stores the encrypted file + SHA-256 checksum as a GitHub artifact for 30 days. Unencrypted dumps never leave the runner.
+- **Decision:** A separate `production-backup` environment (prod ref + password + passphrase, no approval, `main` only).
+  **Why:** The `production` environment needs a human approval, which would block a nightly scheduled job.
+  **Trade-off:** The production database password is stored in two environments.
+  **Alternative:** Repo-level secrets (would expose the prod password to every workflow).
+- **Decision:** Backups as encrypted GitHub artifacts (30-day retention).
+  **Why:** Free, automatic, no extra storage account.
+  **Trade-off:** 30 days only and counts toward GitHub's artifact storage quota (tiny for now). Revisit at launch (e.g. Supabase Pro backups or object storage).
+- Restore runbook: `docs/runbooks/restore-backup.md` (routine local check: migrations + `data.sql`; disaster recovery: new Supabase project + all three files).
+- Verified in a container: encrypt → checksum OK → wrong passphrase rejected → decrypt → restore `data.sql` into a migrated, unseeded database brought back a production-only row. The real `supabase db dump` against production runs first on GitHub.
+- `BACKUP_PASSPHRASE` lives only in GitHub secrets and Amit's password manager. Losing it makes every backup unreadable.
+
 ## 2026-11-19 — T0.8 environments + T0.9 deploy workflows
 
 - **T0.8 done:** Supabase `vibecheck-staging` (ref `bozwowmkhhwzhystumic`) and `vibecheck-prod` (ref `wkfhwuozmhjfytugfula`), both in Mumbai, Free plan. Vercel project `vibecheck-homes` (Hobby, root `apps/web`) at https://vibecheck-homes.vercel.app. GitHub environments `staging` and `production` (production needs Amit's approval), each with `SUPABASE_PROJECT_REF` and `SUPABASE_DB_PASSWORD`; repo secrets `SUPABASE_ACCESS_TOKEN`, `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`.
