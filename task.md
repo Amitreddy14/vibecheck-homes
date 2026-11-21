@@ -18,10 +18,10 @@
 | T0.6  | Local Supabase                | Supabase CLI init; first migration (e.g. `app_meta` table with RLS + a test); `supabase db reset` works locally                                  | done   |
 | T0.7  | CI workflow                   | `ci.yml` runs lint, typecheck, tests, migrations + SQL tests on local Supabase, build; required on PRs                                           | done   |
 | T0.8  | Staging + production projects | Two Supabase projects; Vercel project linked; GitHub environments `staging` and `production` (prod needs approval); secrets stored               | done   |
-| T0.9  | Deploy workflows              | `deploy-staging.yml` on push to `main`; `release.yml` on tag `v*`; first staging deploy live                                                     | review |
+| T0.9  | Deploy workflows              | `deploy-staging.yml` on push to `main`; `release.yml` on tag `v*`; first staging deploy live                                                     | done   |
 | T0.10 | Backup workflow               | Nightly `pg_dump` of production to an encrypted artifact; restore tested once locally                                                            | done   |
 | T0.11 | Design direction              | Pick one of three mockups; fill tokens in `design.md`; Tailwind theme from tokens                                                                | done   |
-| T0.12 | Phase 0 review                | Checklist in rules.md §4 for what exists; `memory.md` updated; tag `v0.0.1`                                                                      | todo   |
+| T0.12 | Phase 0 review                | Checklist in rules.md §4 for what exists; `memory.md` updated; tag `v0.0.1`                                                                      | review |
 
 ## Phase 1 — Sign-up and profile (outline)
 
@@ -42,6 +42,14 @@
 - T2.4 `swipes` / `matches` + mutual-match trigger; rate limit swipes
 - T2.5 "Why you match" sheet
 - T2.6 Event logging for ML v2
+
+## Phase 6 — carried over from the Phase 0 review
+
+Must happen before real users' data is in production (see `docs/reviews/phase-0-review.md`):
+
+- Move nightly backups from public GitHub artifacts to private storage (finding F2)
+- Nonce-based Content Security Policy, drop `'unsafe-inline'` (F6)
+- Upgrade Supabase (no pausing, built-in backups) and Vercel (commercial use) before launch (F8)
 
 ## Phases 3–10
 

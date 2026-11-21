@@ -5,6 +5,16 @@
 
 ---
 
+## 2026-11-21 — Phase 0 review (T0.12)
+
+- T0.9 done: production release `v0.0.2` deployed green after approval (`v0.0.1` pointed at a pre-fix commit and was cancelled).
+- **Decision:** Keep the repository **public**.
+  **Why:** Amit's choice (portfolio visibility; branch rulesets are enforced on public repos without GitHub Pro).
+  **Trade-off:** Code, docs and plans (including the PRD's business model) are readable by anyone, and anyone signed in to GitHub can download the encrypted backup artifacts.
+  **Alternative:** Private repo + GitHub Pro via the Student Developer Pack.
+- Review written: `docs/reviews/phase-0-review.md`. Security checklist: all applicable items done; open findings F2–F9 with actions and dates (backups to private storage and nonce CSP before Phase 6 beta).
+- Git history secret scan (all branches): clean. `pnpm audit`: 1 moderate, dev-only (`minimatch` via typescript-eslint), accepted until upstream supports minimatch 11.
+
 ## 2026-11-20 — T0.10 nightly production backups
 
 - Staging deploy pipeline fully green (2026-11-19, after the first-run fixes below).

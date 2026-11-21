@@ -105,7 +105,7 @@ See the top-risks section on the Whiteboard and `Architecture.md` §11. The bigg
 
 ## 11. Open questions
 
-- [ ] UI direction: bold and playful / soft and cosy / dark and premium (mockups pending).
+- [x] UI direction: B's soft layout + A's bold colours; fonts Bricolage Grotesque + DM Sans (see `design.md`).
 - [ ] Final brand name and domain (check trademark before launch).
 - [ ] Which colleges and areas to seed first in Chennai.
 - [ ] Free LLM provider for Phase 5 (must not train on user data).
