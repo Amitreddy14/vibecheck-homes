@@ -19,6 +19,9 @@
 - Restore runbook: `docs/runbooks/restore-backup.md` (routine local check: migrations + `data.sql`; disaster recovery: new Supabase project + all three files).
 - Verified in a container: encrypt → checksum OK → wrong passphrase rejected → decrypt → restore `data.sql` into a migrated, unseeded database brought back a production-only row. The real `supabase db dump` against production runs first on GitHub.
 - `BACKUP_PASSPHRASE` lives only in GitHub secrets and Amit's password manager. Losing it makes every backup unreadable.
+- First real restore failed: `data.sql` included Supabase-internal `storage.buckets_vectors`, which even the admin user can't write ("permission denied"). Fix: the data dump excludes `storage.buckets_vectors` and `storage.vector_indexes`, as Supabase's own backup guide does.
+- **T0.10 done (2026-11-21):** backup run #3 downloaded, checksum OK, decrypted, `data.sql` restored into a migrated local database with no errors.
+- Dependabot now ignores major upgrades of `typescript`, `eslint`, `@eslint/js` and `@types/node` (held back on purpose; see the T0.3/T0.5 entries). The four open major-bump PRs (#8–#11) were closed.
 
 ## 2026-11-19 — T0.8 environments + T0.9 deploy workflows
 

@@ -11,6 +11,17 @@ updates:
     cooldown:
       default-days: 3
     open-pull-requests-limit: 5
+    # Major upgrades we hold back on purpose (reasons in memory.md). Remove a line
+    # when we decide to take that upgrade; minor and patch updates still arrive.
+    ignore:
+      - dependency-name: typescript # TS 7 = new native compiler; Next.js still needs TS 5
+        update-types: ["version-update:semver-major"]
+      - dependency-name: eslint # eslint-plugin-react / -import support ESLint <= 9
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@eslint/js" # must match the eslint major
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node" # must match the Node major we run (22)
+        update-types: ["version-update:semver-major"]
     groups:
       minor-and-patch:
         update-types: [minor, patch]
