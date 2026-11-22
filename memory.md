@@ -5,6 +5,17 @@
 
 ---
 
+## 2026-11-21 — Phase 0 closed, Phase 1 planned
+
+- Phase 0 complete: PR #20 merged, tag `v0.1.0` released to production.
+- Vercel token renewal reminder: scheduled task on 2027-02-03 10:13 IST (push notification).
+- **Phase 1 product decisions (Amit):**
+  - Discoverable only with basics, housing needs, college/company, at least 1 photo, and a finished quiz.
+  - 12-card vibe quiz.
+  - Gender options: Woman / Man / Non-binary / Prefer not to say.
+  - College/work email verification is an optional badge.
+- Phase 1 split into T1.1–T1.11 in `task.md`; quiz draft and decisions in `PRD.md` §6.1.
+
 ## 2026-11-21 — Phase 0 review (T0.12)
 
 - T0.9 done: production release `v0.0.2` deployed green after approval (`v0.0.1` pointed at a pre-fix commit and was cancelled).
