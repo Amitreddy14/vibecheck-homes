@@ -75,6 +75,33 @@ Acceptance criteria are the minimum for a phase to count as done. Full task brea
 | 9     | Mobile                   | Expo app reusing shared packages; Play Store then App Store                                                                                                                                             |
 | 10    | ML v2                    | Learning-to-rank from swipes, chats and meetups; A/B tested against rule-based scoring                                                                                                                  |
 
+### 6.1 Phase 1 decisions (2026-11-21)
+
+- **Discoverable** (shown in others' decks) only when all of these are filled in:
+  - Basics: first name, date of birth (18+), gender, student or working.
+  - Housing: budget range, preferred area, move-in month, "need a room" or "have a room".
+  - College or company name.
+  - At least 1 photo.
+  - Vibe quiz finished, and consent given.
+- **Gender:** Woman / Man / Non-binary / Prefer not to say. Everyone chooses who they're open to living with; women-only mode (Phase 3) is available to women.
+- **Verification:** optional badge for a verified college or work email. It unlocks a "verified only" filter for others. Paid ID verification comes later (Phase 8).
+- **Vibe quiz v1: 12 quick cards (~2 minutes), one tap each.** Draft below; wording to be finalised in T1.5.
+
+| #   | Question                     | Options                                                            |
+| --- | ---------------------------- | ------------------------------------------------------------------ |
+| 1   | When do you usually sleep?   | Before 11 pm · 11 pm–1 am · After 1 am                             |
+| 2   | When do you usually wake up? | Before 7 am · 7–9 am · After 9 am                                  |
+| 3   | How tidy is your space?      | 1 (lived-in) to 5 (spotless)                                       |
+| 4   | Dirty dishes get washed…     | Right away · By the end of the day · When I need them              |
+| 5   | Friends coming over?         | Rarely · Weekends · Often                                          |
+| 6   | Overnight guests?            | Never · Sometimes · Anytime is fine                                |
+| 7   | Home vibe?                   | Quiet · Occasional get-togethers · Love hosting                    |
+| 8   | Food at home?                | Veg only · Eggetarian · Non-veg                                    |
+| 9   | Smoking?                     | No · Outside only · Yes                                            |
+| 10  | Drinking at home?            | No · Occasionally · Yes                                            |
+| 11  | Pets?                        | No pets please · Have a pet · Love pets                            |
+| 12  | Your weekday routine?        | Out all day (college/office) · Work/study from home · Night shifts |
+
 ## 7. Business model
 
 - **Free:** profile, quiz, matching, chat, basic house hub.

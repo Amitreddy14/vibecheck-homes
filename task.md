@@ -21,18 +21,26 @@
 | T0.9  | Deploy workflows              | `deploy-staging.yml` on push to `main`; `release.yml` on tag `v*`; first staging deploy live                                                     | done   |
 | T0.10 | Backup workflow               | Nightly `pg_dump` of production to an encrypted artifact; restore tested once locally                                                            | done   |
 | T0.11 | Design direction              | Pick one of three mockups; fill tokens in `design.md`; Tailwind theme from tokens                                                                | done   |
-| T0.12 | Phase 0 review                | Checklist in rules.md §4 for what exists; `memory.md` updated; tag `v0.0.1`                                                                      | review |
+| T0.12 | Phase 0 review                | Checklist in rules.md §4 for what exists; `memory.md` updated; tag `v0.0.1`                                                                      | done   |
 
-## Phase 1 — Sign-up and profile (outline)
+## Phase 1 — Sign-up and profile (current)
 
-- T1.1 Auth: Google + email magic link; session handling; protected routes
-- T1.2 18+ gate and consent notice (stored in `consents`)
-- T1.3 `profiles`, `lifestyle`, `preferences` tables with RLS + tests
-- T1.4 Onboarding flow: profile → vibe quiz → preferences (≤ 5 minutes)
-- T1.5 Photo upload: private bucket, type/size checks, EXIF strip, perceptual hash stored
-- T1.6 College-email verification → "verified student" badge
-- T1.7 Account settings: edit, download data, delete account
-- T1.8 E2E test: sign up → finish onboarding
+Goal: a person can sign up, finish onboarding in ≤ 5 minutes, and become **discoverable**: ready to appear in other people's swipe decks (Phase 2).
+Decisions (2026-11-21): all four field groups required to be discoverable; 12-card vibe quiz; gender Woman / Man / Non-binary / Prefer not to say; college/work email verification is an optional badge.
+
+| ID    | Task                     | Done when                                                                                                                                                                                                                                  | Status |
+| ----- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| T1.1  | Supabase in the web app  | `@supabase/ssr` browser + server clients; session refresh on every request; `NEXT_PUBLIC_SUPABASE_URL` + publishable key in the env schema, `.env.example`, Vercel (Preview + Production) and CI; CSP `connect-src` allows the project URL | todo   |
+| T1.2  | Sign-in                  | Google OAuth + email magic link; `/sign-in`, auth callback, sign-out; signed-out users redirected away from app pages; custom SMTP for auth email (built-in mail is rate-limited); auth rate limits reviewed                               | todo   |
+| T1.3  | Profile schema           | Tables `profiles`, `lifestyle`, `preferences`, `consents` with enums (gender, occupation, intent); RLS: a user reads/writes only their own rows; pgTAP tests incl. "user A cannot read or update user B" (IDOR)                            | todo   |
+| T1.4  | Consent + 18+ gate       | Privacy notice v1 shown before any data is collected; consent stored with notice version; date of birth must be 18+ (checked in Zod **and** a database constraint); under-18 sign-ups stopped with a kind message, nothing stored          | todo   |
+| T1.5  | Onboarding flow          | Steps: basics → housing → college/company → vibe quiz (12 cards) → photos → done; progress bar; back/next keeps answers; shared Zod schemas; mobile-first in the chosen design; ≤ 5 minutes                                                | todo   |
+| T1.6  | Photos                   | Private bucket `profile-photos` with owner-only storage policies; JPEG/PNG/WebP checked by content, ≤ 5 MB, max 6; EXIF/location stripped; shown through short-lived signed URLs                                                           | todo   |
+| T1.7  | Discoverable rule        | One database function decides `is_discoverable` (basics + housing + college/company + quiz complete + ≥ 1 photo + consent); tested; profile page shows what's missing                                                                      | todo   |
+| T1.8  | Email verification badge | Optional: verify a college or work email with a 6-digit code; free-mail domains (gmail etc.) rejected; badge `verified_student` / `verified_work`; codes expire and are rate-limited                                                       | todo   |
+| T1.9  | Account settings         | Edit everything from onboarding; download my data (JSON); delete my account (removes profile, photos, auth user), as DPDP requires                                                                                                         | todo   |
+| T1.10 | End-to-end test          | Playwright in CI: sign up → onboarding → discoverable; runs against local Supabase                                                                                                                                                         | todo   |
+| T1.11 | Phase 1 review           | Security checklist for the new surface (auth, uploads, RLS, rate limits); review doc; tag `v0.2.0`                                                                                                                                         | todo   |
 
 ## Phase 2 — Matching (outline)
 
