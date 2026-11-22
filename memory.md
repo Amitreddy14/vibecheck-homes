@@ -5,6 +5,21 @@
 
 ---
 
+## 2026-11-22 — T1.1 Supabase in the web app
+
+- Vercel env vars added (Config type, public): `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, prod values for Production, staging values for Preview.
+- `@supabase/supabase-js` 2.119.0 + `@supabase/ssr` 0.12.7.
+- `src/lib/supabase/client.ts` (browser), `server.ts` (Server Components/Actions, `server-only`), `proxy.ts` + `src/proxy.ts` (session refresh on every request; Next.js 16 renamed middleware to proxy).
+- The proxy copies Supabase's "don't cache" headers onto responses that set auth cookies, so a CDN can never serve one user's session to another.
+- **Decision:** The env check refuses a secret key in `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (`sb_secret_…` or a JWT with role `service_role`). The app won't build or start with one.
+  **Why:** That key bypasses all RLS; in the browser it would expose every user's data.
+  **Trade-off:** none.
+  **Alternative:** Rely on review only.
+- The Supabase URL must be https (plain http allowed only for 127.0.0.1/localhost). Both key styles are accepted (`sb_publishable_…` and older `eyJ…` anon keys).
+- CSP now allows exactly our Supabase origin for API, images and realtime (`wss://`), with no wildcard.
+- CI build uses placeholder Supabase values; deploys get the real ones from Vercel.
+- Verified: lint, typecheck, 16 unit tests, build (shows the proxy), `next start` returns 200 with the right CSP, a junk auth cookie doesn't break the page, and a secret key fails the build. Not yet verified: a real session refresh (needs sign-in, T1.2).
+
 ## 2026-11-21 — Phase 0 closed, Phase 1 planned
 
 - Phase 0 complete: PR #20 merged, tag `v0.1.0` released to production.

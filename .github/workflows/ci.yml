@@ -26,6 +26,9 @@ jobs:
     env:
       # Public, non-secret value so the env check passes during the build.
       NEXT_PUBLIC_APP_URL: http://localhost:3000
+      # Placeholders that pass the env check; CI builds never talk to a real project.
+      NEXT_PUBLIC_SUPABASE_URL: https://ci-placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_placeholder_not_a_real_key
       NEXT_TELEMETRY_DISABLED: "1"
     steps:
       # Actions are pinned to exact commits (tag in the comment) so a hijacked tag can't change what runs.
