@@ -5,6 +5,7 @@ import { env } from "@/lib/env";
 /**
  * Refreshes the signed-in user's session on every request and passes updated
  * auth cookies to both the page (request) and the browser (response).
+ * Returns whether someone is signed in, so the proxy can guard private pages.
  */
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -33,7 +34,21 @@ export async function updateSession(request: NextRequest) {
 
   // Keep this call directly after creating the client: it validates the session
   // token and triggers the refresh. Nothing should run in between.
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
 
-  return response;
+  return { response, isSignedIn: Boolean(data?.claims?.sub) };
+}
+
+/**
+ * A redirect that keeps any refreshed auth cookies and no-cache headers.
+ * Dropping them would sign the user out or make the redirect cacheable.
+ */
+export function redirectKeepingSession(from: NextResponse, to: URL): NextResponse {
+  const redirect = NextResponse.redirect(to);
+  from.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+  ["cache-control", "expires", "pragma"].forEach((name) => {
+    const value = from.headers.get(name);
+    if (value) redirect.headers.set(name, value);
+  });
+  return redirect;
 }
