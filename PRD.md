@@ -64,7 +64,7 @@ Acceptance criteria are the minimum for a phase to count as done. Full task brea
 | Phase | Feature                  | Acceptance criteria (summary)                                                                                                                                                                           |
 | ----- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 0     | Foundation               | Monorepo builds; CI green on PR; staging deploy on merge; nightly DB backup job; docs in place                                                                                                          |
-| 1     | Sign-up and profile      | Google + email-link sign-in; 18+ gate; consent notice stored; profile with photos (type/size checked, private bucket); vibe quiz saved; college-email verification sets badge                           |
+| 1     | Sign-up and profile      | Google sign-in (email links later); 18+ gate; consent notice stored; profile with photos (type/size checked, private bucket); vibe quiz saved; college-email verification sets badge                    |
 | 2     | Matching                 | Hard filters + weighted score in Postgres; swipe deck; mutual like → match; "why you match" (top 3 reasons + 1 conflict); no profile shown that fails a hard filter                                     |
 | 3     | Chat + safety            | Realtime 1:1 chat only after a match; phone/links masked until both opt in; report and block (blocked user disappears both ways); women-only mode; verified-only chat setting; meetup check-in reminder |
 | 4     | Listings                 | "Have a room" / "Need a room" posts; map shows a rough area only (never the exact address); duplicate-photo detection                                                                                   |
@@ -84,7 +84,8 @@ Acceptance criteria are the minimum for a phase to count as done. Full task brea
   - At least 1 photo.
   - Vibe quiz finished, and consent given.
 - **Gender:** Woman / Man / Non-binary / Prefer not to say. Everyone chooses who they're open to living with; women-only mode (Phase 3) is available to women.
-- **Verification:** optional badge for a verified college or work email. It unlocks a "verified only" filter for others. Paid ID verification comes later (Phase 8).
+- **Sign-in:** Google only for now (decision 2026-11-23). Email links need a domain + sending service; revisit before the beta.
+- **Verification:** optional badge for a verified college or work email (blocked until there's a domain to send codes from). It unlocks a "verified only" filter for others. Paid ID verification comes later (Phase 8).
 - **Vibe quiz v1: 12 quick cards (~2 minutes), one tap each.** Draft below; wording to be finalised in T1.5.
 
 | #   | Question                     | Options                                                            |

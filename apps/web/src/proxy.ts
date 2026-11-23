@@ -1,9 +1,29 @@
 import type { NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/proxy";
+import { AFTER_SIGN_IN_PATH, SIGN_IN_PATH, isProtectedPath } from "@/lib/auth/paths";
+import { redirectKeepingSession, updateSession } from "@/lib/supabase/proxy";
 
 /** Runs before every matching request (Next.js 16 "proxy", formerly middleware). */
 export async function proxy(request: NextRequest) {
-  return updateSession(request);
+  const { response, isSignedIn } = await updateSession(request);
+  const { pathname, search } = request.nextUrl;
+
+  // Private page, nobody signed in: go to sign-in and come back afterwards.
+  if (!isSignedIn && isProtectedPath(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = SIGN_IN_PATH;
+    url.search = `?next=${encodeURIComponent(pathname + search)}`;
+    return redirectKeepingSession(response, url);
+  }
+
+  // Already signed in: skip the sign-in page.
+  if (isSignedIn && pathname === SIGN_IN_PATH) {
+    const url = request.nextUrl.clone();
+    url.pathname = AFTER_SIGN_IN_PATH;
+    url.search = "";
+    return redirectKeepingSession(response, url);
+  }
+
+  return response;
 }
 
 export const config = {

@@ -5,6 +5,19 @@
 
 ---
 
+## 2026-11-23 — T1.2 Google sign-in
+
+- **Decision (Amit):** Google sign-in only for now.
+  **Why:** Email links and the college-email badge need a custom email sender. Supabase's built-in mail only reaches project team members (2/hour), and services like Resend (free: 100/day) need a domain we own.
+  **Trade-off:** People without a Google account can't join; the T1.8 badge is blocked until a domain exists.
+  **Alternative:** Buy a domain (~₹500–1,000/yr) and add Resend. Revisit before the Phase 6 beta.
+- Email provider turned **off** locally (`config.toml`) and must be off in both hosted projects, or anyone could create email/password accounts through the API.
+- Routes: `/sign-in` (Server Action → Google), `/auth/callback` (code → session), `signOut` Server Action, temporary `/home`. Server Actions carry Next.js's built-in CSRF check.
+- Proxy guards `/home`, `/onboarding`, `/discover`, `/matches`, `/chat`, `/house`, `/settings`; signed-out visitors go to `/sign-in?next=…`. Redirects keep refreshed cookies and no-cache headers.
+- `safeNextPath` allows only our own protected pages as the post-sign-in target (blocks `//evil`, `/\evil`, encoded and `javascript:` tricks); 13 tests.
+- Error messages on `/sign-in` come from a fixed list; nothing from the URL is echoed.
+- Verified with `next start`: redirects, open-redirect attempt neutralised, injected script not shown, callback without code goes back to sign-in. Supabase config with Google enabled parses fine without Google keys (CI's database job unaffected). Not yet verified: a real Google sign-in (needs the Google client, staging).
+
 ## 2026-11-22 — T1.1 Supabase in the web app
 
 - Vercel env vars added (Config type, public): `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, prod values for Production, staging values for Preview.
