@@ -101,25 +101,25 @@ vibecheck-homes/
 
 All tables: `id uuid pk`, `created_at`, `updated_at`; RLS **on**.
 
-| Table                                       | Purpose                        | Key fields                                                                                                                          | Phase |
-| ------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ----- |
-| `profiles`                                  | Public-ish profile             | `user_id`, display name, age (18+ check), gender, bio, college/company, `verification_level`                                        | 1     |
-| `profile_photos`                            | Photos in private bucket       | `profile_id`, `storage_path`, `phash`, order                                                                                        | 1     |
-| `lifestyle`                                 | Vibe quiz answers              | sleep window, cleanliness 1–5, guests, noise, food, smoking, pets, work pattern, languages, interests[]                             | 1     |
-| `preferences`                               | What they want                 | budget min/max, area + radius (PostGIS point, stored rough), move-in window, gender pref, women-only, verified-only, dealbreakers[] | 1     |
-| `consents`                                  | DPDP consent log               | user, purpose, notice version, granted/withdrawn at                                                                                 | 1     |
-| `verifications`                             | Badge evidence                 | user, type (college_email / id_kyc), status, provider ref; **no ID numbers stored**                                                 | 1 / 8 |
-| `swipes`                                    | Like / pass                    | `swiper_id`, `target_id`, direction                                                                                                 | 2     |
-| `matches`                                   | Mutual likes                   | `user_a`, `user_b`, score, explanation json                                                                                         | 2     |
-| `conversations`, `messages`                 | Chat                           | match-scoped; `masked` flags; soft delete                                                                                           | 3     |
-| `blocks`, `reports`                         | Safety                         | reporter, target, reason, status, moderator notes                                                                                   | 3     |
-| `meetups`                                   | Meet before moving in          | match, time, place type (public), check-in status                                                                                   | 3     |
-| `listings`, `listing_photos`                | Have/need a room               | rent, deposit, area (rough), amenities, rules                                                                                       | 4     |
-| `households`, `household_members`           | House hub                      |                                                                                                                                     | 7     |
-| `expenses`, `expense_splits`, `settlements` | Who owes whom                  |                                                                                                                                     | 7     |
-| `chores`, `chore_assignments`, `reminders`  | Rotation + reminders           |                                                                                                                                     | 7     |
-| `house_rules`                               | Agreement + member acceptances |                                                                                                                                     | 7     |
-| `audit_log`                                 | Admin/moderator actions        | actor, action, target, at                                                                                                           | 3     |
+| Table                                       | Purpose                        | Key fields                                                                                                             | Phase |
+| ------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ----- |
+| `profiles`                                  | Basics shown on the card       | `id` = auth user, first name, date of birth (18+ enforced in the DB, never shown), gender, occupation, `org_name`, bio | 1     |
+| `profile_photos`                            | Photos in private bucket       | `profile_id`, `storage_path`, `phash`, order                                                                           | 1     |
+| `lifestyle`                                 | Vibe quiz v1 (12 answers)      | one column per question with allowed values checked; `completed_at` only when all 12 are answered                      | 1     |
+| `preferences`                               | What they're looking for       | intent (need/have room), budget min/max (₹/month), area (text until Phase 4), move-in month, `open_to_genders`         | 1     |
+| `consents`                                  | DPDP consent log               | purpose, notice version, granted/withdrawn at; append-only (no edit/delete)                                            | 1     |
+| `verifications`                             | Badge evidence                 | user, type (college_email / id_kyc), status, provider ref; **no ID numbers stored**                                    | 1 / 8 |
+| `swipes`                                    | Like / pass                    | `swiper_id`, `target_id`, direction                                                                                    | 2     |
+| `matches`                                   | Mutual likes                   | `user_a`, `user_b`, score, explanation json                                                                            | 2     |
+| `conversations`, `messages`                 | Chat                           | match-scoped; `masked` flags; soft delete                                                                              | 3     |
+| `blocks`, `reports`                         | Safety                         | reporter, target, reason, status, moderator notes                                                                      | 3     |
+| `meetups`                                   | Meet before moving in          | match, time, place type (public), check-in status                                                                      | 3     |
+| `listings`, `listing_photos`                | Have/need a room               | rent, deposit, area (rough), amenities, rules                                                                          | 4     |
+| `households`, `household_members`           | House hub                      |                                                                                                                        | 7     |
+| `expenses`, `expense_splits`, `settlements` | Who owes whom                  |                                                                                                                        | 7     |
+| `chores`, `chore_assignments`, `reminders`  | Rotation + reminders           |                                                                                                                        | 7     |
+| `house_rules`                               | Agreement + member acceptances |                                                                                                                        | 7     |
+| `audit_log`                                 | Admin/moderator actions        | actor, action, target, at                                                                                              | 3     |
 
 ## 6. Matching v1 (rule-based, explainable)
 

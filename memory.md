@@ -5,6 +5,19 @@
 
 ---
 
+## 2026-11-24 — T1.3 profile tables
+
+- T1.2 done: Google sign-in verified locally and on staging. Gotcha: `supabase/.env` is read only when the auth container starts, so restart (`pnpm db:stop` + `pnpm db:start`) after editing it.
+- Migration `20261124110000_profiles.sql`: `profiles`, `preferences`, `lifestyle`, `consents`.
+- **Decision:** Allowed values as `text` + `CHECK (… in (…))`, not Postgres enums.
+  **Why:** Adding or renaming an option later is a one-line constraint change; enum values can't be removed easily.
+  **Trade-off:** No enum type to share; the list is repeated in Zod (packages/shared, T1.5).
+  **Alternative:** Postgres enums.
+- Rules enforced by the database itself, not just the app: 18+ (`date_of_birth <= today − 18 years`), valid gender/occupation/intent/quiz values, tidiness 1–5, budget ₹1,000–5,00,000 with min ≤ max, move-in = 1st of a month, `open_to_genders` from the allowed list, quiz `completed_at` only when all 12 answers exist.
+- Access: users see and change only their own rows (RLS with `(select auth.uid())`); signed-out visitors have no access; no direct deletes (account deletion = deleting the auth user, which cascades everything); consents are append-only (only `withdrawn_at` can be set).
+- Other people's profiles are not readable by anyone yet. Phase 2 exposes them only through a matching function.
+- pgTAP: 30 tests with two users (A/B), covering ownership, IDOR attempts, data rules, anon access and cascade delete. Verified in a container on Postgres 16 with a stand-in auth schema; sabotage checks (open read policy, dropped 18+ check) made the right tests fail.
+
 ## 2026-11-23 — T1.2 Google sign-in
 
 - **Decision (Amit):** Google sign-in only for now.
