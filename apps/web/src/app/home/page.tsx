@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { signOut } from "@/lib/auth/actions";
 import { SIGN_IN_PATH } from "@/lib/auth/paths";
+import { CONSENT_PATH, hasCurrentConsent } from "@/lib/onboarding/gate";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Home" };
@@ -12,6 +13,8 @@ export default async function HomePage() {
   // getUser() asks Supabase to confirm the session (the proxy already guarded this page).
   const { data } = await supabase.auth.getUser();
   if (!data.user) redirect(SIGN_IN_PATH);
+  // Nothing else happens until the privacy notice is agreed to (T1.4).
+  if (!(await hasCurrentConsent(supabase))) redirect(CONSENT_PATH);
 
   const name = data.user.user_metadata?.full_name ?? data.user.email ?? "there";
 
