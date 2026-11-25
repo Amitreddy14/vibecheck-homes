@@ -5,6 +5,22 @@
 
 ---
 
+## 2026-11-25 — T1.4 consent + 18+ gate
+
+- T1.3 done: merged (PR #25); staging applied the migration.
+- New first screen after sign-in: `/onboarding/consent`. Shows a short summary + the full privacy notice, asks first name (prefilled from Google) and date of birth, and an "I'm 18+ and agree" box. `/home` sends anyone without consent to the current notice version back here. Public copy at `/privacy`.
+- Privacy notice v1 lives in `packages/shared/src/privacy-notice.ts` (one source for web and mobile). Any change to what we collect or why = new version and everyone re-agrees.
+- **Decision:** `profiles.gender` and `profiles.occupation` are now nullable.
+  **Why:** The gate saves name + date of birth before the basics step (T1.5) asks the rest; DOB has to live in `profiles` so the 18+ CHECK guards it.
+  **Trade-off:** A profile can exist half-filled; the discoverable rule (T1.7) must require gender and occupation, like `org_name`.
+  **Alternative:** Ask everything on one screen (slower first step), or keep DOB in a separate table (two copies of the 18+ rule).
+- **Decision:** `accept_privacy_notice()` saves consent + name + DOB in ONE database call (security invoker, so RLS and CHECKs still apply).
+  **Why:** All-or-nothing: an under-18 date or a bad version saves nothing; two separate inserts could leave a profile without consent.
+- 18+ is checked three times: Zod (`isAdult`, mirroring Postgres' month-end clamping and UTC date), the database CHECK, and the gate function. Typos/impossible dates never count as "under 18".
+- Under-18: nothing saved, `delete_own_account()` removes the brand-new auth user, sign-out, kind message on `/sign-in`. Never auto-deletes someone who already has a profile. `delete_own_account()` (security definer, only ever deletes `auth.uid()`) is reused by T1.9.
+- Known limit: age is self-declared; we can't verify it without ID checks (later, with verification).
+- pgTAP: 18 new tests (56 total), incl. all-or-nothing on failure, no double consent, anon can't call either function. Sabotage (dropping the function revokes) failed the right 2 tests. Unit tests: 7 new in `packages/shared` (birthday edge, 29 Feb, UTC, typo ≠ under-18).
+
 ## 2026-11-24 — T1.3 profile tables
 
 - T1.2 done: Google sign-in verified locally and on staging. Gotcha: `supabase/.env` is read only when the auth container starts, so restart (`pnpm db:stop` + `pnpm db:start`) after editing it.

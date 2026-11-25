@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { APP_NAME } from "@vch/shared";
 import { signInWithGoogle } from "@/lib/auth/actions";
 import { safeNextPath } from "@/lib/auth/paths";
@@ -9,6 +10,8 @@ export const metadata: Metadata = { title: "Sign in" };
 const ERROR_MESSAGES: Record<string, string> = {
   google: "We couldn't reach Google. Please try again.",
   callback: "Sign-in didn't finish. Please try again.",
+  under_18:
+    "Vibecheck Homes is only for people 18 and over, so we couldn't create your account. We haven't kept any of your details.",
 };
 
 export default async function SignInPage({
@@ -60,7 +63,10 @@ export default async function SignInPage({
           Continue with Google
         </button>
         <p className="text-sm text-muted">
-          You must be 18 or older. We never show your email or phone number to other people.
+          You must be 18 or older. We never show your email or phone number to other people.{" "}
+          <Link href="/privacy" className="font-bold underline">
+            Privacy notice
+          </Link>
         </p>
       </form>
     </main>
